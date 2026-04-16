@@ -1,3 +1,6 @@
+import requests
+from bs4 import BeautifulSoup
+
 from flask import Flask, render_template, request
 from datetime import datetime
 
@@ -32,7 +35,50 @@ def index():
     link +="<a href = /math>次方與根號計算</a><hr>"
     link += "<a href=/read>讀取Firestore資料</a><hr>"
     link += "<a href=/read2>讀取Firestore資料(根據姓名關鍵字:楊)</a><hr>"
+    link += "<a href=/read3>讀取Firestore資料(根據姓名關鍵字:input)</a><hr>"
+    link += "<a href=/spider>讀取Firestore資料(根據姓名關鍵字:input)</a><hr>"
     return link
+
+
+
+@app.route("/read3", methods=["GET", "POST"])
+def read3():
+    if request.method == "POST":
+        # 獲取 HTML 表單中 name="keyword" 的值
+        keyword = request.values.get("keyword")
+        
+        Result = f"<h3>查詢結果 (關鍵字: {keyword})：</h3>"
+        db = firestore.client()
+        collection_ref = db.collection("靜宜資管")
+        docs = collection_ref.get()    
+        
+        found = False
+        for doc in docs:
+            teacher = doc.to_dict()
+            if keyword in teacher.get("name", ""):
+                # 這裡可以自訂顯示格式，例如：老師姓名、研究室
+                name = teacher.get("name")
+                lab = teacher.get("lab", "無資料")
+                Result += f"<p><b style='color:blue'>{name}</b> 老師的研究室是在 {lab}</p>"
+                found = True
+
+        if not found:
+            Result = "抱歉，查無此關鍵字姓名之老師資料"    
+        
+        Result += "<br><a href='/read3'>返回查詢頁面</a> | <a href='/'>返回首頁</a>"
+        return Result
+    else:
+        # GET 請求時，顯示輸入框畫面 (對齊照片 1 的介面)
+        html = """
+        <h2>靜宜資管老師查詢</h2>
+        <form action="/read3" method="POST">
+            請輸入老師姓名關鍵字：
+            <input type="text" name="keyword">
+            <button type="submit">查詢</button>
+        </form>
+        <br><a href="/">返回首頁</a>
+        """
+        return html
 
 @app.route("/read2")
 def read2():
