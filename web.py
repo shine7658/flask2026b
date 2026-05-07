@@ -42,7 +42,37 @@ def index():
     link += "<a href=/spiderMovie>讀取開眼電影即將上映影片，寫入Firestore</a><hr>"
     link += "<a href=/searchMovie>輸入片名關鍵字,可以查詢資料庫符合的電影</a><hr>"
     link += "<a href=/road>台中市十大肇事路口</a><hr>"
+    link += "<a href=/weather>最新天氣預報</a><hr>"
     return link
+
+@app.route("/weather", methods=["GET", "POST"])
+def weather():
+    if request.method == "POST":
+        city = request.values.get("city")
+        # 這裡請確保你的 Authorization Key 是正確的
+        token = "rdec-key-123-45678-011121314"
+        url = f"https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization={token}&locationName={city}"
+        
+        data = requests.get(url).json()
+        
+        try:
+            # 簡化抓取路徑
+            location = data["records"]["location"][0]
+            # Wx 是天氣現象，PoP 是降雨機率
+            wx = location["weatherElement"][0]["time"][0]["parameter"]["parameterName"]
+            pop = location["weatherElement"][1]["time"][0]["parameter"]["parameterName"]
+            
+            return f"<h3>{city}的天氣是：{wx}，降雨機率：{pop}%</h3><a href='/weather'>返回</a>"
+        except:
+            return "查詢失敗，請輸入完整的縣市名稱（如：臺中市）。<a href='/weather'>返回</a>"
+    
+    # GET 請求時顯示簡單的表單
+    return """
+        <form method="POST">
+            縣市：<input type="text" name="city" placeholder="例如：臺中市">
+            <button type="submit">查詢天氣</button>
+        </form>
+    """
 
 @app.route("/road")
 def road():
