@@ -50,8 +50,7 @@ def weather():
     if request.method == "POST":
         city = request.values.get("city")
         # 這裡請確保你的 Authorization Key 是正確的
-        token = "rdec-key-123-45678-011121314"
-        url = f"https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization={token}&locationName={city}"
+        url = "https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=rdec-key-123-45678-011121314&format=JSON&locationName=" + city
         
         data = requests.get(url).json()
         
