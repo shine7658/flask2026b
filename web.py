@@ -41,7 +41,7 @@ def index():
     link += "<a href=/movie1>爬取即將上映電影</a><hr>"
     link += "<a href=/spiderMovie>讀取開眼電影即將上映影片，寫入Firestore</a><hr>"
     link += "<a href=/searchMovie>輸入片名關鍵字,可以查詢資料庫符合的電影</a><hr>"
-    link += "<a href=/road>台中市十大肇事路口</a><hr>"
+    link += "<a href=/road>台中市十大肇事路口作者:林哲旭</a><hr>"
     return link
 
 @app.route("/road")
