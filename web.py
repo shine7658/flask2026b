@@ -58,7 +58,7 @@ def webhook():
 
     if (action == "rateChoice"):
         rate =  req["queryResult"]["parameters"]["rate"]
-        info = "我是林哲旭開發的機器人,您選擇的電影分級是：" + rate + "，相關電影：\n"
+        info = "我是林哲旭開發的機器人,您選擇的電影分級是：" + rate + "，相關電影：\n" + result
 
         db = firestore.client()
         collection_ref = db.collection("電影含分級")
