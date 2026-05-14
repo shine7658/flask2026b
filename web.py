@@ -67,7 +67,7 @@ def webhook():
     for doc in docs:
         m = doc.to_dict()
         if rate in m.get("rate", ""):
-            result += "★ " + m.get("title") + "\n"
+            result += m.get("title") + "\n"
             found = True
     
     if not found:
